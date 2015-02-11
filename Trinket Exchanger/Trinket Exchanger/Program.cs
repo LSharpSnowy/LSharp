@@ -32,7 +32,6 @@ namespace Trinket_Exchanger
             menu.AddItem(new MenuItem("blue", "Buy Blue").SetValue(true));
             menu.AddItem(new MenuItem("bluetimer", "Buy Blue at min:").SetValue(new Slider(30, 1, 60)));
             menu.AddItem(new MenuItem("redSightstone", "Buy Red on Sightstone").SetValue(true));
-            menu.AddItem(new MenuItem("redWriggle", "Buy Red on Wriggle").SetValue(true));
             menu.AddToMainMenu();
             Game.PrintChat("Trinket Exchanger loaded.");
             Game.OnGameUpdate += OnTick;
@@ -45,24 +44,22 @@ namespace Trinket_Exchanger
             
             if (Player.IsDead || Player.InShop())
             {
-                if (GetTimer() < 1 && menu.Item("yellow").GetValue<bool>())
+                if (GetTimer() < 1 && menu.Item("yellow").GetValue<bool>() && !Player.InventoryItems.Find(s => s.Id == ItemId.Warding_Totem_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Warding_Totem_Trinket);
                 }
                 if (menu.Item("red").GetValue<bool>() && (GetTimer() >= menu.Item("redtimer").GetValue<Slider>().Value) &&
-                    (GetTimer() < menu.Item("bluetimer").GetValue<Slider>().Value))
+                    (GetTimer() < menu.Item("bluetimer").GetValue<Slider>().Value) && !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
                 }
-                if (menu.Item("blue").GetValue<bool>() && (GetTimer() >= menu.Item("bluetimer").GetValue<Slider>().Value))
+                if (menu.Item("blue").GetValue<bool>() && (GetTimer() >= menu.Item("bluetimer").GetValue<Slider>().Value) 
+                    && !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Scrying_Orb_Trinket);
                 }
-                if (menu.Item("red").GetValue<bool>() && menu.Item("redSightstone").GetValue<bool>() && Player.InventoryItems.Find(s => s.Id == ItemId.Sightstone).IsValidSlot() || Player.InventoryItems.Find(s => s.Id == ItemId.Ruby_Sightstone).IsValidSlot())
-                {
-                    Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
-                }
-                if (menu.Item("red").GetValue<bool>() && menu.Item("redWriggle").GetValue<bool>() && Player.InventoryItems.Find(s => s.Id == ItemId.Wriggles_Lantern).IsValidSlot())
+                if (menu.Item("red").GetValue<bool>() && menu.Item("redSightstone").GetValue<bool>() && Player.InventoryItems.Find(s => s.Id == ItemId.Sightstone).IsValidSlot()
+                    || Player.InventoryItems.Find(s => s.Id == ItemId.Ruby_Sightstone).IsValidSlot() && !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
                 }
