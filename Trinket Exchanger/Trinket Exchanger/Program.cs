@@ -31,6 +31,8 @@ namespace Trinket_Exchanger
             menu.AddItem(new MenuItem("redtimer", "Buy Red at min:").SetValue(new Slider(15, 1, 60)));
             menu.AddItem(new MenuItem("blue", "Buy Blue").SetValue(true));
             menu.AddItem(new MenuItem("bluetimer", "Buy Blue at min:").SetValue(new Slider(30, 1, 60)));
+            menu.AddItem(new MenuItem("redSightstone", "Buy Red on Sightstone").SetValue(true));
+            menu.AddItem(new MenuItem("redWriggle", "Buy Red on Wriggle").SetValue(true));
             menu.AddToMainMenu();
             Game.PrintChat("Trinket Exchanger loaded.");
             Game.OnGameUpdate += OnTick;
@@ -39,6 +41,8 @@ namespace Trinket_Exchanger
 
         private static void OnTick(EventArgs args)
         {
+
+            
             if (Player.IsDead || Player.InShop())
             {
                 if (GetTimer() < 1 && menu.Item("yellow").GetValue<bool>())
@@ -53,6 +57,14 @@ namespace Trinket_Exchanger
                 if (menu.Item("blue").GetValue<bool>() && (GetTimer() >= menu.Item("bluetimer").GetValue<Slider>().Value))
                 {
                     Player.BuyItem(ItemId.Scrying_Orb_Trinket);
+                }
+                if (menu.Item("red").GetValue<bool>() && menu.Item("redSightstone").GetValue<bool>() && Player.InventoryItems.Find(s => s.Id == ItemId.Sightstone).IsValidSlot() || Player.InventoryItems.Find(s => s.Id == ItemId.Ruby_Sightstone).IsValidSlot())
+                {
+                    Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
+                }
+                if (menu.Item("red").GetValue<bool>() && menu.Item("redWriggle").GetValue<bool>() && Player.InventoryItems.Find(s => s.Id == ItemId.Wriggles_Lantern).IsValidSlot())
+                {
+                    Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
                 }
             }
         }
