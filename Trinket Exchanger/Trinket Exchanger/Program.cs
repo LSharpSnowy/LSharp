@@ -46,7 +46,7 @@ namespace Trinket_Exchanger
                     Player.BuyItem(ItemId.Warding_Totem_Trinket);
                 }
                 if (menu.Item("red").GetValue<bool>() && (GetTimer() >= menu.Item("redtimer").GetValue<Slider>().Value) &&
-                    (GetTimer() < menu.Item("orbtimer").GetValue<Slider>().Value))
+                    (GetTimer() < menu.Item("bluetimer").GetValue<Slider>().Value))
                 {
                     Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
                 }
