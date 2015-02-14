@@ -37,28 +37,42 @@ namespace Trinket_Exchanger
         {
             if (Player.IsDead || Player.InShop())
             {
-                if (GetTimer() <= 1 && _menu.Item("yellow").GetValue<bool>() && !Player.InventoryItems.Find(s => s.Id == ItemId.Warding_Totem_Trinket).IsValidSlot() 
-                    && !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot() && !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
+                if (_menu.Item("yellow").GetValue<bool>() &&
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Warding_Totem_Trinket).IsValidSlot() &&
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot() && 
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Warding_Totem_Trinket);
                 }
-                if (_menu.Item("red").GetValue<bool>() && (GetTimer() >= _menu.Item("redtimer").GetValue<Slider>().Value) &&
-                    (GetTimer() < _menu.Item("bluetimer").GetValue<Slider>().Value) && !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
+                if (GetTimer() <= 1 && _menu.Item("yellow").GetValue<bool>() &&
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Warding_Totem_Trinket).IsValidSlot())
+                {
+                    Player.BuyItem(ItemId.Warding_Totem_Trinket);
+                }
+                if (_menu.Item("red").GetValue<bool>() &&
+                    (GetTimer() >= _menu.Item("redtimer").GetValue<Slider>().Value) &&
+                    (GetTimer() < _menu.Item("bluetimer").GetValue<Slider>().Value) &&
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
                 }
-                if (_menu.Item("blue").GetValue<bool>() && (GetTimer() >= _menu.Item("bluetimer").GetValue<Slider>().Value) 
-                    && !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot())
+                if (_menu.Item("blue").GetValue<bool>() &&
+                    (GetTimer() >= _menu.Item("bluetimer").GetValue<Slider>().Value) &&
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Scrying_Orb_Trinket);
                 }
-                if (_menu.Item("red").GetValue<bool>() && _menu.Item("redSightstone").GetValue<bool>() && Player.InventoryItems.Find(s => s.Id == ItemId.Sightstone).IsValidSlot()
-                    || Player.InventoryItems.Find(s => s.Id == ItemId.Ruby_Sightstone).IsValidSlot() && !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
+                if (_menu.Item("red").GetValue<bool>() && _menu.Item("redSightstone").GetValue<bool>() &&
+                    Player.InventoryItems.Find(s => s.Id == ItemId.Sightstone).IsValidSlot() ||
+                    Player.InventoryItems.Find(s => s.Id == ItemId.Ruby_Sightstone).IsValidSlot() &&
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
                 }
-                if (_menu.Item("blue").GetValue<bool>() && _menu.Item("adc").GetValue<bool>() && Player.InventoryItems.Find(s => s.Id == ItemId.Infinity_Edge).IsValidSlot()
-                    && Player.InventoryItems.Find(s => s.Id == ItemId.Zeal).IsValidSlot() && !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot())
+                if (_menu.Item("blue").GetValue<bool>() && _menu.Item("adc").GetValue<bool>() &&
+                    Player.InventoryItems.Find(s => s.Id == ItemId.Infinity_Edge).IsValidSlot() && 
+                    Player.InventoryItems.Find(s => s.Id == ItemId.Zeal).IsValidSlot() &&
+                    !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot())
                 {
                     _menu.Item("red").SetValue(false);
                     Player.BuyItem(ItemId.Scrying_Orb_Trinket);
