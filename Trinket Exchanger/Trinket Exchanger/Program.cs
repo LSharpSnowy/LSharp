@@ -12,6 +12,9 @@ namespace Trinket_Exchanger
     {
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static Menu _menu;
+        public static bool hasYellow = false;
+        public static bool hasRed = false;
+        public static bool hasBlue = false;
 
         static void Main(string[] args)
         {
@@ -21,15 +24,26 @@ namespace Trinket_Exchanger
         static void Game_OnGameLoad(EventArgs args)
         {
             _menu = new Menu("Trinket Exchanger", "TrinketExchanger", true);
-            _menu.AddItem(new MenuItem("yellow", "Buy Yellow at start").SetValue(true));
-            _menu.AddItem(new MenuItem("red", "Buy Red").SetValue(true));
-            _menu.AddItem(new MenuItem("redtimer", "Buy Red at min:").SetValue(new Slider(15, 1, 60)));
-            _menu.AddItem(new MenuItem("blue", "Buy Blue").SetValue(true));
-            _menu.AddItem(new MenuItem("bluetimer", "Buy Blue at min:").SetValue(new Slider(30, 1, 60)));
-            _menu.AddItem(new MenuItem("redSightstone", "Buy Red on Sightstone").SetValue(true));
-            _menu.AddItem(new MenuItem("adc", "Buy Blue when IE + Zeal is finished").SetValue(true));
+            var genMenu = new Menu("General", "TE.G");
+            genMenu.AddItem(new MenuItem("yellow", "Buy Yellow at start").SetValue(true));
+            genMenu.AddItem(new MenuItem("red", "Buy Red").SetValue(true));
+            genMenu.AddItem(new MenuItem("redtimer", "Buy Red at min:").SetValue(new Slider(15, 1, 60)));
+            genMenu.AddItem(new MenuItem("blue", "Buy Blue").SetValue(false));
+            genMenu.AddItem(new MenuItem("bluetimer", "Buy Blue at min:").SetValue(new Slider(30, 1, 60)));
+            _menu.AddSubMenu(genMenu);
+
+            var miscMenu = new Menu("Misc", "TE.Misc");
+            miscMenu.AddItem(new MenuItem("redSightstone", "Buy Red on Sightstone").SetValue(true));
+            miscMenu.AddItem(new MenuItem("adc", "Buy Blue when IE + Zeal is finished").SetValue(true));
+            miscMenu.AddItem(new MenuItem("rlevel", "Buy Red at Level").SetValue(true));
+            miscMenu.AddItem(new MenuItem("rleveltimer", "Buy Red at Level:").SetValue(new Slider(9, 1, 18)));
+            miscMenu.AddItem(new MenuItem("blevel", "Buy Blue at Level").SetValue(false));
+            miscMenu.AddItem(new MenuItem("bleveltimer", "Buy Blue at Level:").SetValue(new Slider(9, 1, 18)));
+            _menu.AddSubMenu(miscMenu);
+
+           
             _menu.AddToMainMenu();
-            Game.PrintChat("Trinket Exchanger loaded.");
+            Game.PrintChat("<font color=\"#FF9900\"><b>Trinket Exchanger</b></font> - Loaded");
             Game.OnGameUpdate += OnTick;
         }
 
@@ -37,47 +51,72 @@ namespace Trinket_Exchanger
         {
             if (Player.IsDead || Player.InShop())
             {
-                if (_menu.Item("yellow").GetValue<bool>() &&
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Warding_Totem_Trinket).IsValidSlot() &&
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot() && 
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
+                //Yellow
+                if (_menu.Item("yellow").GetValue<bool>() && !GetTrinket())
                 {
                     Player.BuyItem(ItemId.Warding_Totem_Trinket);
+                    hasYellow = true;
                 }
-                if (GetTimer() <= 1 && _menu.Item("yellow").GetValue<bool>() &&
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Warding_Totem_Trinket).IsValidSlot())
-                {
-                    Player.BuyItem(ItemId.Warding_Totem_Trinket);
-                }
-                if (_menu.Item("red").GetValue<bool>() &&
-                    (GetTimer() >= _menu.Item("redtimer").GetValue<Slider>().Value) &&
-                    (GetTimer() < _menu.Item("bluetimer").GetValue<Slider>().Value) &&
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
+
+                if (!hasRed && !hasBlue && (_menu.Item("red").GetValue<bool>() &&
+                    (GetTimer() >= _menu.Item("redtimer").GetValue<Slider>().Value) ||
+                    (_menu.Item("rlevel").GetValue<bool>()) &&
+                     (Player.Level >= _menu.Item("rleveltimer").GetValue<Slider>().Value)))
                 {
                     Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
+                    hasRed = true;
                 }
-                if (_menu.Item("blue").GetValue<bool>() &&
-                    (GetTimer() >= _menu.Item("bluetimer").GetValue<Slider>().Value) &&
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot())
+                if (!hasBlue && (_menu.Item("blue").GetValue<bool>() &&
+                    (GetTimer() >= _menu.Item("bluetimer").GetValue<Slider>().Value) || 
+                    (_menu.Item("blevel").GetValue<bool>()) && (Player.Level >= _menu.Item("bleveltimer").GetValue<Slider>().Value)))
                 {
                     Player.BuyItem(ItemId.Scrying_Orb_Trinket);
+                    hasBlue = true;
                 }
-                if (_menu.Item("red").GetValue<bool>() && _menu.Item("redSightstone").GetValue<bool>() &&
-                    Player.InventoryItems.Find(s => s.Id == ItemId.Sightstone).IsValidSlot() ||
-                    Player.InventoryItems.Find(s => s.Id == ItemId.Ruby_Sightstone).IsValidSlot() &&
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot())
+                if (_menu.Item("redSightstone").GetValue<bool>() && !hasRed && !hasBlue &&
+                    (Player.InventoryItems.Find(s => s.Id == ItemId.Sightstone).IsValidSlot() ||
+                    Player.InventoryItems.Find(s => s.Id == ItemId.Ruby_Sightstone).IsValidSlot()))
                 {
                     Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
+                    hasRed = true;
                 }
-                if (_menu.Item("blue").GetValue<bool>() && _menu.Item("adc").GetValue<bool>() &&
+                if (_menu.Item("adc").GetValue<bool>() && !hasBlue &&
                     Player.InventoryItems.Find(s => s.Id == ItemId.Infinity_Edge).IsValidSlot() && 
-                    Player.InventoryItems.Find(s => s.Id == ItemId.Zeal).IsValidSlot() &&
-                    !Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot())
+                    Player.InventoryItems.Find(s => s.Id == ItemId.Zeal).IsValidSlot())
                 {
-                    _menu.Item("red").SetValue(false);
                     Player.BuyItem(ItemId.Scrying_Orb_Trinket);
+                    hasBlue = true;
                 }
+
             }
+        }
+
+        public static bool GetTrinket()
+        {
+            //Yellow
+            if ((Player.InventoryItems.Find(s => s.Id == ItemId.Warding_Totem_Trinket).IsValidSlot()) ||
+                (Player.InventoryItems.Find(s => s.Id == ItemId.Greater_Stealth_Totem_Trinket).IsValidSlot()) ||
+                (Player.InventoryItems.Find(s => s.Id == ItemId.Greater_Vision_Totem_Trinket).IsValidSlot()))
+            {
+                hasYellow = true;
+            }
+            else hasYellow = false;
+            //Red
+            if ((Player.InventoryItems.Find(s => s.Id == ItemId.Sweeping_Lens_Trinket).IsValidSlot()) ||
+                (Player.InventoryItems.Find(s => s.Id == ItemId.Oracles_Lens_Trinket).IsValidSlot()))
+            {
+                hasRed = true;
+            }
+            else hasRed = false;
+            //Blue
+            if ((Player.InventoryItems.Find(s => s.Id == ItemId.Scrying_Orb_Trinket).IsValidSlot()) ||
+                (Player.InventoryItems.Find(s => s.Id == ItemId.Farsight_Orb_Trinket).IsValidSlot()))
+            {
+                hasBlue = true;
+            }
+            else hasBlue = false;
+            if (!hasYellow && !hasRed && !hasBlue) return false;
+            return true;
         }
 
         public static float GetTimer()
