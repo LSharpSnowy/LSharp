@@ -41,6 +41,16 @@ namespace Trinket_Exchanger
             miscMenu.AddItem(new MenuItem("bleveltimer", "Buy Blue at Level:").SetValue(new Slider(9, 1, 18)));
             _menu.AddSubMenu(miscMenu);
 
+            var upgradeMenu = new Menu("Upgrade", "TE.Upgrade");
+            upgradeMenu.AddItem(new MenuItem("uylevel", "Upgrade Yellow at Level").SetValue(false));
+            upgradeMenu.AddItem(new MenuItem("uylevel1", "To Greater Stealth Totem").SetValue(false));
+            upgradeMenu.AddItem(new MenuItem("uylevel2", "To Greater Vision Totem").SetValue(false));
+            upgradeMenu.AddItem(new MenuItem("uyleveltimer", "Upgrade Red at Level:").SetValue(new Slider(9, 9, 18)));
+            upgradeMenu.AddItem(new MenuItem("urlevel", "Upgrade Red at Level").SetValue(false));
+            upgradeMenu.AddItem(new MenuItem("urleveltimer", "Upgrade Red at Level:").SetValue(new Slider(9, 9, 18)));
+            upgradeMenu.AddItem(new MenuItem("ublevel", "Upgrade Blue at Level").SetValue(false));
+            upgradeMenu.AddItem(new MenuItem("ubleveltimer", "Upgrade Blue at Level:").SetValue(new Slider(9, 9, 18)));
+            _menu.AddSubMenu(upgradeMenu);
            
             _menu.AddToMainMenu();
             Game.PrintChat("<font color=\"#FF9900\"><b>Trinket Exchanger</b></font> - Loaded");
@@ -85,6 +95,31 @@ namespace Trinket_Exchanger
                     Player.InventoryItems.Find(s => s.Id == ItemId.Zeal).IsValidSlot())
                 {
                     Player.BuyItem(ItemId.Scrying_Orb_Trinket);
+                    hasBlue = true;
+                }
+                if (_menu.Item("uylevel").GetValue<bool>() && !hasBlue && !hasRed && hasYellow &&
+                    Player.Level >= _menu.Item("uyleveltimer").GetValue<Slider>().Value)
+                {
+                    if (_menu.Item("uylevel1").GetValue<bool>())
+                    {
+                        Player.BuyItem(ItemId.Greater_Stealth_Totem_Trinket);
+                    }
+                    else if (_menu.Item("uylevel2").GetValue<bool>())
+                    {
+                        Player.BuyItem(ItemId.Greater_Vision_Totem_Trinket);
+                    }
+                    hasYellow = true;
+                }
+                if (_menu.Item("urlevel").GetValue<bool>() && !hasYellow && !hasBlue && hasRed &&
+                    Player.Level >= _menu.Item("urleveltimer").GetValue<Slider>().Value)
+                {
+                    Player.BuyItem(ItemId.Oracles_Lens_Trinket);
+                    hasRed = true;
+                }
+                if (_menu.Item("ublevel").GetValue<bool>() && !hasYellow && !hasRed && hasBlue &&
+                    Player.Level >= _menu.Item("ubleveltimer").GetValue<Slider>().Value)
+                {
+                    Player.BuyItem(ItemId.Farsight_Orb_Trinket);
                     hasBlue = true;
                 }
 
