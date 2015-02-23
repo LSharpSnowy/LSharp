@@ -45,7 +45,7 @@ namespace Trinket_Exchanger
             upgradeMenu.AddItem(new MenuItem("uylevel", "Upgrade Yellow at Level").SetValue(false));
             upgradeMenu.AddItem(new MenuItem("uylevel1", "To Greater Stealth Totem").SetValue(false));
             upgradeMenu.AddItem(new MenuItem("uylevel2", "To Greater Vision Totem").SetValue(false));
-            upgradeMenu.AddItem(new MenuItem("uyleveltimer", "Upgrade Red at Level:").SetValue(new Slider(9, 9, 18)));
+            upgradeMenu.AddItem(new MenuItem("uyleveltimer", "Upgrade Yellow at Level:").SetValue(new Slider(9, 9, 18)));
             upgradeMenu.AddItem(new MenuItem("urlevel", "Upgrade Red at Level").SetValue(false));
             upgradeMenu.AddItem(new MenuItem("urleveltimer", "Upgrade Red at Level:").SetValue(new Slider(9, 9, 18)));
             upgradeMenu.AddItem(new MenuItem("ublevel", "Upgrade Blue at Level").SetValue(false));
