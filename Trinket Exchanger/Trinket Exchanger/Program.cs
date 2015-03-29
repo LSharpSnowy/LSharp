@@ -54,7 +54,7 @@ namespace Trinket_Exchanger
            
             _menu.AddToMainMenu();
             Game.PrintChat("<font color=\"#FF9900\"><b>Trinket Exchanger</b></font> - Loaded");
-            Game.OnGameUpdate += OnTick;
+            Game.OnUpdate += OnTick;
         }
 
         private static void OnTick(EventArgs args)
